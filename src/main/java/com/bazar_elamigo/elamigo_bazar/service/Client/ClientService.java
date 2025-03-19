@@ -43,13 +43,12 @@ public class ClientService implements IClientService{
     }
 
     @Override
-    public void updateClient(Long client_id) throws ResourceNotFoundException{
+    public void updateClient(Long client_id, Client updatedClient) throws ResourceNotFoundException{
         if (!clientRepo.existsById(client_id)){
             throw new ResourceNotFoundException("Cliente con id: " + client_id + " no encontrado", "P-404");
         }
         try{
-            Client client = readCliente(client_id);
-            this.newClient(client);
+            this.newClient(updatedClient);
         }catch (Exception e){
             throw new RuntimeException("Error al actualizar el cliente "+ e.getMessage(), e);
         }

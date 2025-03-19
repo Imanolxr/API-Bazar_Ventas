@@ -17,7 +17,7 @@ public interface IClientService {
     public Client readCliente(Long client_id);
 
     //modificar cliente
-    public void updateClient(Long client_id);
+    public void updateClient(Long client_id, Client updatedClient);
 
     //lista completa de clientes
     public List<Client> bringClientList();

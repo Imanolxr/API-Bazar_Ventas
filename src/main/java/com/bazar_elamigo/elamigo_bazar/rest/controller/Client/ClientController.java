@@ -36,8 +36,8 @@ public class ClientController {
         return new ResponseEntity<>("Cliente eliminado ", HttpStatus.ACCEPTED);
     }
     @PutMapping("/update/{client_id}")
-    public ResponseEntity<String> updateClient(@PathVariable Long client_id){
-        clientServ.updateClient(client_id);
+    public ResponseEntity<String> updateClient(@PathVariable Long client_id, @RequestBody Client updatedClient){
+        clientServ.updateClient(client_id, updatedClient);
         return new ResponseEntity<>("Cliente actualizado", HttpStatus.OK);
     }
 
