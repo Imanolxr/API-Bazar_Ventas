@@ -48,6 +48,7 @@ public class ClientService implements IClientService{
             throw new ResourceNotFoundException("Cliente con id: " + client_id + " no encontrado", "P-404");
         }
         try{
+            updatedClient.setClient_id(client_id);
             this.newClient(updatedClient);
         }catch (Exception e){
             throw new RuntimeException("Error al actualizar el cliente "+ e.getMessage(), e);

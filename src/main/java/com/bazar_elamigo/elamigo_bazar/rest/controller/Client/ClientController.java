@@ -43,11 +43,7 @@ public class ClientController {
 
     @GetMapping("/readAllClients")
     public ResponseEntity<List<Client>> clientList(){
-        try{
-            List <Client> clients = clientServ.bringClientList();
-            return new ResponseEntity<>(clients, HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        List <Client> clients = clientServ.bringClientList();
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 }
