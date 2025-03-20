@@ -44,30 +44,10 @@ public class SaleService implements ISaleService{
 
         sale.setDateOfSale(LocalDate.now());
 
-        if(sale.getClient().getClient_id() == null || !clientRepo.existsById(sale.getClient().getClient_id())){
-
-            clientRepo.save(sale.getClient());
-            System.out.println("El cliente no existe en la base de datos, se creara un nuevo cliente");
-        }
-        //se calcula el total de la venta
-        double total = 0;
-        for(SaleProduct saleProduct: sale.getProductList()){
-            System.out.println("id producto: " + saleProduct.getId());
-            System.out.println("Cantidad: " + saleProduct.getQuantity());
-            System.out.println("precio: " + saleProduct.getPrice());
-            System.out.println("subtotal producto: " + saleProduct.getQuantity() * saleProduct.getPrice());
-
-            total+= saleProduct.getPrice() * saleProduct.getQuantity();
-            System.out.println("total:" + total);
-        }
-        sale.setTotal(total);
-
-        Sale saleToSave = saleRepo.save(sale);
-
 
         for(SaleProduct saleProduct : sale.getProductList()){
 
-            // 🔹 Verifica si realmente hay un objeto 'Product'
+            //  Verifica si realmente hay un objeto 'Product'
             if (saleProduct.getProduct() == null || saleProduct.getProduct().getProduct_id() == null) {
                 throw new RuntimeException("El product_id en SaleProduct es nulo");
             }
@@ -76,17 +56,41 @@ public class SaleService implements ISaleService{
                     .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado en la base de datos"));
             if (saleProduct.getQuantity() > product.getAvailableQuantity()){
                 throw new InsufficientStockException("Stock Insuficiente para el producto: " + product.getName()+ "\n" +
-                                                     "Stock disponible: " + product.getAvailableQuantity() + "\n"+
-                                                     "Cantidad Solicitada: " + saleProduct.getQuantity());
+                        "Stock disponible: " + product.getAvailableQuantity() + "\n"+
+                        "Cantidad Solicitada: " + saleProduct.getQuantity());
             }
 
             prodServ.discountStock(saleProduct.getQuantity(), product.getProduct_id());
 
             saleProduct.setProduct(product);
-            saleProduct.setSale(saleToSave);
+            saleProduct.setSale(sale);
 
-            saleProductRepo.save(saleProduct);
+
         }
+
+
+
+
+        if(sale.getClient().getClient_id() == null || !clientRepo.existsById(sale.getClient().getClient_id())){
+
+            clientRepo.save(sale.getClient());
+            System.out.println("El cliente no existe en la base de datos, se creara un nuevo cliente");
+        }
+        //se calcula el total de la venta
+        double total = 0;
+        for(SaleProduct saleProduct: sale.getProductList()){
+            System.out.println("id producto: " + saleProduct.getProduct().getProduct_id());
+            System.out.println("Cantidad: " + saleProduct.getQuantity());
+            System.out.println("precio: " + saleProduct.getPrice());
+            System.out.println("subtotal producto: " + saleProduct.getQuantity() * saleProduct.getPrice());
+
+            total+= saleProduct.getPrice() * saleProduct.getQuantity();
+            System.out.println("total:" + total);
+        }
+        sale.setTotal(total);
+        saleRepo.save(sale);
+
+
     }
 
     @Override
